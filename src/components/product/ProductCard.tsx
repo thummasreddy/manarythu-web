@@ -44,56 +44,82 @@ export function ProductCard({ product }: { product: ProductCardDto }) {
   };
 
   return (
-    <article className="card group flex flex-col overflow-hidden transition-shadow hover:shadow-card-hover">
-      <Link href={`/product/${product.slug}`} className="relative block aspect-square overflow-hidden bg-cream-100">
+    <article className="card group relative flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
+      {/* Image */}
+      <Link href={`/product/${product.slug}`} className="relative block aspect-[4/3] overflow-hidden bg-cream-100">
         {product.imageUrl ? (
           <Image
             src={product.imageUrl}
             alt={localized(product.name, locale)}
             fill
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-4xl">{product.categorySlug === "fruits" ? "🥭" : "🥬"}</div>
+          <div className="flex h-full items-center justify-center text-5xl transition-transform duration-500 group-hover:scale-110">
+            {product.categorySlug === "fruits" ? "🥭" : "🥬"}
+          </div>
         )}
-        <div className="absolute left-2 top-2 flex flex-col gap-1">
+
+        {/* Gradient overlay on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+        {/* Badges */}
+        <div className="absolute left-3 top-3 flex flex-col gap-1.5">
           {product.growingMethod !== "CONVENTIONAL" && (
-            <span className={cn(product.growingMethod === "ORGANIC" ? "chip-organic" : "chip-natural")}>
+            <span
+              className={cn(
+                "chip",
+                product.growingMethod === "ORGANIC" ? "chip-organic" : "chip-natural",
+              )}
+            >
               {product.growingMethod === "ORGANIC" ? t("product.organic") : t("product.natural")}
             </span>
           )}
-          {isDeal && <span className="chip-deal">{Math.round((variant.savings / variant.mrp) * 100)}% off</span>}
+          {isDeal && <span className="chip chip-deal">{Math.round((variant.savings / variant.mrp) * 100)}% off</span>}
         </div>
+
         {!variant.inStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/70 text-sm font-semibold text-brand-700">
+          <div className="absolute inset-0 flex items-center justify-center bg-white/75 text-sm font-bold text-brand-700 backdrop-blur-[2px]">
             {t("common.outOfStock")}
           </div>
         )}
+
+        {/* Harvest badge */}
+        {harvestedToday && (
+          <span className="absolute right-3 top-3 chip chip-organic">
+            {t("common.harvestedToday")}
+          </span>
+        )}
       </Link>
 
-      <div className="flex flex-1 flex-col p-3">
-        <Link href={`/product/${product.slug}`} className="line-clamp-2 text-sm font-semibold text-brand-900 hover:text-brand-600">
+      <div className="flex flex-1 flex-col p-4">
+        <Link
+          href={`/product/${product.slug}`}
+          className="line-clamp-2 text-[15px] font-bold leading-snug text-brand-900 transition-colors hover:text-brand-600"
+        >
           {localized(product.name, locale)}
         </Link>
+
         <Link
           href={`/farmer/${product.farmer.farmerSlug}`}
-          className="mt-1 flex items-center gap-1 text-xs text-brand-500 hover:text-brand-700"
+          className="mt-1.5 flex items-center gap-1 text-xs text-brand-500 transition-colors hover:text-brand-700"
         >
           <MapPin className="h-3 w-3 shrink-0" />
           <span className="truncate">{product.farmer.farmName} · {product.farmer.district}</span>
         </Link>
 
-        <div className="mt-1 flex items-center gap-1 text-xs text-brand-500">
-          <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-          {product.ratingAvg > 0 ? product.ratingAvg.toFixed(1) : "New"}
-          {harvestedToday && (
-            <span className="ml-auto chip-organic py-0 text-[10px]">{t("common.harvestedToday")}</span>
+        <div className="mt-2 flex items-center gap-1.5 text-xs text-brand-500">
+          <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+          {product.ratingAvg > 0 ? (
+            <span className="font-semibold text-brand-700">{product.ratingAvg.toFixed(1)}</span>
+          ) : (
+            <span>New</span>
           )}
         </div>
 
-        <div className="mt-2 flex items-end gap-2">
-          <span className="text-base font-bold text-brand-800">
+        <div className="mt-3 flex items-baseline gap-2">
+          <span className="text-lg font-bold text-brand-900">
             {t("common.inr")}{formatINR(variant.sellingPrice)}
           </span>
           {isDeal && (
@@ -101,15 +127,18 @@ export function ProductCard({ product }: { product: ProductCardDto }) {
               {t("common.inr")}{formatINR(variant.mrp)}
             </span>
           )}
-          <span className="ml-auto text-xs text-brand-500">{variant.label}</span>
+          <span className="ml-auto rounded-full bg-cream-200 px-2 py-0.5 text-[11px] font-semibold text-earth-700">
+            {variant.label}
+          </span>
         </div>
+
         {isDeal && (
-          <p className="text-xs font-medium text-clay-500">
+          <p className="mt-1 text-xs font-semibold text-clay-600">
             {t("common.saveRupee", { amount: formatINR(variant.savings) })}
           </p>
         )}
 
-        <div className="mt-3">
+        <div className="mt-4">
           {qty === 0 ? (
             <button
               className="btn-primary w-full"
@@ -120,20 +149,20 @@ export function ProductCard({ product }: { product: ProductCardDto }) {
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : t("common.add")}
             </button>
           ) : (
-            <div className="flex items-center justify-between rounded-xl border border-brand-200 bg-white">
+            <div className="flex items-center justify-between overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-inner">
               <button
-                className="flex h-9 w-10 items-center justify-center text-brand-700 hover:bg-brand-50 disabled:opacity-40"
+                className="flex h-11 w-12 items-center justify-center text-brand-700 transition-colors hover:bg-brand-50 disabled:opacity-40"
                 onClick={() => onQty(-1)}
                 disabled={busy}
                 aria-label="Decrease quantity"
               >
                 <Minus className="h-4 w-4" />
               </button>
-              <span className="min-w-6 text-center text-sm font-semibold text-brand-800">
+              <span className="min-w-8 text-center text-sm font-bold text-brand-900">
                 {busy ? <Loader2 className="mx-auto h-4 w-4 animate-spin" /> : qty}
               </span>
               <button
-                className="flex h-9 w-10 items-center justify-center text-brand-700 hover:bg-brand-50 disabled:opacity-40"
+                className="flex h-11 w-12 items-center justify-center text-brand-700 transition-colors hover:bg-brand-50 disabled:opacity-40"
                 onClick={() => onQty(1)}
                 disabled={busy || qty >= variant.maxOrderQty || qty >= variant.availableQty}
                 aria-label="Increase quantity"

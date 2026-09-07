@@ -8,8 +8,8 @@ import type { CategoryDto } from "@/lib/api/types";
 export function CategoryGrid({ categories }: { categories: CategoryDto[] }) {
   const { t, locale } = useI18n();
   return (
-    <section className="container-page py-6 md:py-8" aria-labelledby="categories-heading">
-      <h2 id="categories-heading" className="mb-4 font-display text-xl font-bold text-brand-800 md:text-2xl">
+    <section className="container-page py-8 md:py-12" aria-labelledby="categories-heading">
+      <h2 id="categories-heading" className="section-title mb-6">
         {t("home.categories")}
       </h2>
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10 xl:gap-4">
@@ -17,12 +17,12 @@ export function CategoryGrid({ categories }: { categories: CategoryDto[] }) {
           <Link
             key={c.id}
             href={`/category/${c.slug}`}
-            className="card flex flex-col items-center gap-2 p-3 text-center transition-shadow hover:shadow-card-hover"
+            className="group flex flex-col items-center gap-3 rounded-3xl border border-brand-100/80 bg-white/80 p-3 text-center shadow-card backdrop-blur-sm transition-all hover:-translate-y-1 hover:border-brand-200 hover:bg-white hover:shadow-card-hover sm:p-4"
           >
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-2xl md:h-14 md:w-14">
+            <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-100 to-cream-100 text-2xl shadow-inner transition-transform group-hover:scale-110 md:h-16 md:w-16 md:text-3xl">
               {c.icon}
             </span>
-            <span className="line-clamp-2 text-xs font-medium text-brand-800 md:text-sm">
+            <span className="line-clamp-2 text-xs font-bold text-brand-800 transition-colors group-hover:text-brand-600 md:text-sm">
               {localized(c.name, locale)}
             </span>
           </Link>

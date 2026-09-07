@@ -4,8 +4,15 @@
 
 @layer base {
   :root {
-    --background: 250 251 246;
-    --foreground: 30 41 28;
+    --background: 255 253 249;
+    --foreground: 29 58 21;
+    --card: 255 255 255;
+    --card-foreground: 29 58 21;
+    --border: 223 242 211;
+    --ring: 74 143 42;
+    --brand-500: 74 143 42;
+    --cream-100: 254 249 239;
+    --clay-500: 200 90 61;
   }
 
   html {
@@ -13,13 +20,19 @@
   }
 
   body {
-    @apply bg-cream-50 text-brand-900 antialiased;
+    @apply bg-cream-50 text-brand-950 antialiased;
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Accessible focus ring for keyboard users */
   :focus-visible {
     @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-cream-50;
+  }
+
+  ::selection {
+    @apply bg-brand-100 text-brand-900;
   }
 }
 
@@ -29,21 +42,21 @@
   }
 
   .card {
-    @apply rounded-2xl border border-brand-100/70 bg-white shadow-card;
+    @apply rounded-3xl border border-brand-100/80 bg-white/95 shadow-card backdrop-blur-sm;
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold
-      transition-colors focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2
-      disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold
+      transition-all duration-200 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2
+      disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98];
   }
 
   .btn-primary {
-    @apply btn bg-brand-500 text-white hover:bg-brand-600 active:bg-brand-700;
+    @apply btn bg-brand-500 text-white shadow-soft hover:-translate-y-0.5 hover:bg-brand-600 hover:shadow-elevated active:translate-y-0;
   }
 
   .btn-outline {
-    @apply btn border border-brand-200 bg-white text-brand-700 hover:bg-brand-50;
+    @apply btn border-2 border-brand-200 bg-cream-50 text-brand-700 hover:border-brand-400 hover:bg-brand-50;
   }
 
   .btn-ghost {
@@ -51,24 +64,50 @@
   }
 
   .chip {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium;
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide;
   }
 
   .chip-organic {
-    @apply chip bg-brand-50 text-brand-700;
+    @apply chip bg-brand-100 text-brand-700;
   }
 
   .chip-natural {
-    @apply chip bg-cream-100 text-earth-600;
+    @apply chip bg-leaf-300/30 text-leaf-700;
   }
 
   .chip-deal {
-    @apply chip bg-clay-500/10 text-clay-500;
+    @apply chip bg-clay-500/10 text-clay-600;
   }
 
   .input {
-    @apply w-full rounded-xl border border-brand-200 bg-white px-4 py-2.5 text-sm
-      placeholder:text-brand-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30;
+    @apply w-full rounded-2xl border border-brand-100 bg-white px-4 py-3 text-sm shadow-inner
+      placeholder:text-brand-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20;
+  }
+
+  .section-title {
+    @apply font-display text-2xl font-bold tracking-tight text-brand-900 md:text-3xl;
+  }
+
+  .section-subtitle {
+    @apply mt-1 text-base text-brand-500;
+  }
+
+  .gradient-glass {
+    @apply bg-gradient-to-br from-brand-50/80 to-cream-100/80 backdrop-blur-xl;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-brand-700 to-brand-500 bg-clip-text text-transparent;
+  }
+
+  .bg-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
   }
 }
 

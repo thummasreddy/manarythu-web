@@ -8,6 +8,7 @@ import { useLocationStore } from "@/lib/store/location-store";
 import { useCartStore } from "@/lib/store/cart-store";
 import { LocationModal } from "@/components/location/LocationModal";
 import { Logo } from "./Logo";
+import { cn } from "@/lib/utils";
 
 export function Header() {
   const { t, locale, setLocale } = useI18n();
@@ -18,11 +19,16 @@ export function Header() {
   const [q, setQ] = useState("");
 
   return (
-    <header className="sticky top-0 z-40 border-b border-brand-100 bg-cream-50/95 backdrop-blur">
-      <div className="container-page flex h-16 items-center gap-3 md:h-20">
+    <header
+      className={cn(
+        "sticky top-0 z-40 border-b border-brand-100/50 bg-cream-50/85 shadow-soft backdrop-blur-xl",
+        "transition-all duration-300",
+      )}
+    >
+      <div className="container-page flex h-16 items-center gap-3 md:h-[72px]">
         {/* Mobile menu button */}
         <button
-          className="btn-ghost -ml-2 p-2 md:hidden"
+          className="btn-ghost -ml-2 rounded-2xl p-2.5 md:hidden"
           aria-label="Menu"
           onClick={() => setMenuOpen((v) => !v)}
         >
@@ -33,13 +39,18 @@ export function Header() {
 
         {/* Delivery location */}
         <button
-          className="hidden items-center gap-2 rounded-xl px-3 py-2 text-left text-sm hover:bg-brand-50 md:flex"
+          className={cn(
+            "hidden items-center gap-2 rounded-2xl border border-brand-100 bg-white/60 px-3 py-2 text-left text-sm",
+            "backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-soft md:flex",
+          )}
           onClick={() => setLocOpen(true)}
         >
-          <MapPin className="h-4 w-4 shrink-0 text-brand-500" />
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
+            <MapPin className="h-4 w-4" />
+          </span>
           <span className="min-w-0">
-            <span className="block text-xs text-brand-500">{t("header.deliveringTo")}</span>
-            <span className="block max-w-[12rem] truncate font-medium text-brand-800">
+            <span className="block text-[11px] uppercase tracking-wide text-brand-500">{t("header.deliveringTo")}</span>
+            <span className="block max-w-[12rem] truncate font-semibold text-brand-900">
               {area?.zoneName ?? area?.city ?? t("header.chooseLocation")}
             </span>
           </span>
@@ -47,7 +58,7 @@ export function Header() {
 
         {/* Search */}
         <form
-          className="relative ml-auto hidden flex-1 md:block"
+          className="relative ml-auto hidden flex-1 max-w-xl md:block"
           action="/search"
           role="search"
           onSubmit={(e) => {
@@ -58,11 +69,11 @@ export function Header() {
           <label htmlFor="search" className="sr-only">
             {t("header.searchPlaceholder")}
           </label>
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-400" />
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-400" />
           <input
             id="search"
             name="q"
-            className="input pl-10"
+            className="input h-11 pl-11"
             placeholder={t("header.searchPlaceholder")}
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -70,25 +81,40 @@ export function Header() {
         </form>
 
         {/* Actions */}
-        <div className="ml-auto flex items-center gap-1 md:ml-2">
+        <div className="ml-auto flex items-center gap-1.5 md:ml-2">
           <button
-            className="hidden items-center gap-1 rounded-xl px-3 py-2 text-sm font-medium text-brand-700 hover:bg-brand-50 md:flex"
+            className={cn(
+              "hidden items-center gap-1.5 rounded-2xl border border-brand-100 px-3 py-2 text-sm font-semibold",
+              "bg-white/60 text-brand-700 backdrop-blur-sm transition-all hover:bg-brand-50 hover:shadow-soft md:flex",
+            )}
             onClick={() => setLocale(locale === "en" ? "te" : "en")}
             aria-label={t("header.language")}
           >
             <Globe className="h-4 w-4" />
             {locale === "en" ? "తె" : "EN"}
           </button>
-          <Link href="/account" className="btn-ghost hidden p-2 md:inline-flex" aria-label={t("header.account")}>
+          <Link
+            href="/account"
+            className="btn-ghost hidden rounded-2xl p-2.5 md:inline-flex"
+            aria-label={t("header.account")}
+          >
             <User className="h-5 w-5" />
           </Link>
-          <Link href="/favorites" className="btn-ghost hidden p-2 md:inline-flex" aria-label={t("header.favorites")}>
+          <Link
+            href="/favorites"
+            className="btn-ghost hidden rounded-2xl p-2.5 md:inline-flex"
+            aria-label={t("header.favorites")}
+          >
             <Heart className="h-5 w-5" />
           </Link>
-          <Link href="/cart" className="btn-ghost relative p-2" aria-label={t("header.cart")}>
+          <Link
+            href="/cart"
+            className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-600 hover:shadow-elevated active:translate-y-0"
+            aria-label={t("header.cart")}
+          >
             <ShoppingCart className="h-5 w-5" />
             {totalItems > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-clay-500 px-1 text-[10px] font-bold text-white">
+              <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-clay-500 px-1 text-[10px] font-bold text-white shadow-sm">
                 {totalItems}
               </span>
             )}
@@ -99,13 +125,16 @@ export function Header() {
       {/* Mobile location + search row */}
       <div className="container-page flex items-center gap-2 pb-3 md:hidden">
         <button
-          className="flex flex-1 items-center gap-2 rounded-xl border border-brand-200 bg-white px-3 py-2 text-left text-sm"
+          className={cn(
+            "flex flex-1 items-center gap-2 rounded-2xl border border-brand-100 bg-white/80 px-3 py-2 text-left text-sm",
+            "shadow-sm backdrop-blur-sm",
+          )}
           onClick={() => setLocOpen(true)}
         >
           <MapPin className="h-4 w-4 shrink-0 text-brand-500" />
           <span className="min-w-0">
-            <span className="block text-[11px] leading-tight text-brand-500">{t("header.deliveringTo")}</span>
-            <span className="block max-w-full truncate text-sm font-medium leading-tight text-brand-800">
+            <span className="block text-[10px] uppercase tracking-wide text-brand-500">{t("header.deliveringTo")}</span>
+            <span className="block max-w-full truncate text-sm font-semibold leading-tight text-brand-900">
               {area?.zoneName ?? area?.city ?? t("header.chooseLocation")}
             </span>
           </span>
@@ -121,9 +150,9 @@ export function Header() {
         }}
       >
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-400" />
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-400" />
           <input
-            className="input pl-10"
+            className="input h-11 pl-11"
             name="q"
             placeholder={t("header.searchPlaceholder")}
             value={q}
@@ -131,6 +160,19 @@ export function Header() {
           />
         </div>
       </form>
+
+      {/* Mobile nav overlay */}
+      {menuOpen && (
+        <div className="absolute inset-x-0 top-full border-b border-brand-100 bg-cream-50/95 p-4 shadow-elevated backdrop-blur-xl md:hidden">
+          <nav className="grid gap-2">
+            <Link href="/" className="btn-ghost justify-start" onClick={() => setMenuOpen(false)}>{t("nav.home")}</Link>
+            <Link href="/categories" className="btn-ghost justify-start" onClick={() => setMenuOpen(false)}>{t("nav.categories")}</Link>
+            <Link href="/farmers" className="btn-ghost justify-start" onClick={() => setMenuOpen(false)}>{t("home.farmersNearYou")}</Link>
+            <Link href="/cart" className="btn-ghost justify-start" onClick={() => setMenuOpen(false)}>{t("header.cart")}</Link>
+            <Link href="/account" className="btn-ghost justify-start" onClick={() => setMenuOpen(false)}>{t("nav.account")}</Link>
+          </nav>
+        </div>
+      )}
 
       {locOpen && <LocationModal />}
     </header>
