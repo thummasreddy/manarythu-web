@@ -57,7 +57,7 @@ export async function apiRequest<T>(path: string, options: FetchOptions = {}): P
 
 /** Server-side variant that talks to the backend directly (bypassing the Next.js rewrite). */
 export async function apiRequestServer<T>(path: string, options: FetchOptions = {}): Promise<T> {
-  const baseUrl = process.env.MANARYTHU_API_URL ?? "http://localhost:8081";
+  const baseUrl = process.env.MANARYTHU_API_URL ?? "http://localhost:8080";
   const { method = "GET", body, headers = {}, signal } = options;
   const init: RequestInit = {
     method,
