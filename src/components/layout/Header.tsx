@@ -174,7 +174,7 @@ export function Header() {
         </div>
       )}
 
-      {locOpen && <LocationModal />}
+      {locOpen && <LocationModal onClose={() => setLocOpen(false)} />}
     </header>
   );
 }

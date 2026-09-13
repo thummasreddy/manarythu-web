@@ -24,7 +24,8 @@
     "litre": "L",
     "ml": "ml",
     "box": "box",
-    "bag": "bag"
+    "bag": "bag",
+    "back": "Back"
   },
   "header": {
     "deliveringTo": "Delivering to",

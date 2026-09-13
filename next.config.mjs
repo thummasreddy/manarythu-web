@@ -9,7 +9,7 @@ const nextConfig = {
   async rewrites() {
     // Proxy /api/v1/* to the backend during local development so the browser
     // talks to the same origin (avoids CORS friction and simplifies SSR).
-    const api = process.env.MANARYTHU_API_URL ?? "http://localhost:8081";
+    const api = process.env.MANARYTHU_API_URL ?? "http://localhost:8080";
     return [
       { source: "/api/:path*", destination: `${api}/api/:path*` },
     ];
