@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MapPin, Loader2, CheckCircle2, XCircle, Navigation } from "lucide-react";
 import { useI18n } from "@/i18n/useI18n";
 import { api } from "@/lib/api/endpoints";
 import { useLocationStore } from "@/lib/store/location-store";
 import type { ServiceabilityDto } from "@/lib/api/types";
 
-export function LocationModal() {
+export function LocationModal({ onClose }: { onClose?: () => void } = {}) {
   const { t } = useI18n();
   const set = useLocationStore((s) => s.set);
   const [pincode, setPincode] = useState("");
@@ -33,8 +33,17 @@ export function LocationModal() {
   };
 
   const confirm = () => {
-    if (result?.serviceable) set(pincode, result);
+    if (!result?.serviceable) return;
+    set(pincode, result);
+    onClose?.();
   };
+
+  useEffect(() => {
+    if (!onClose) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
 
   const useGps = () => {
     // Geolocation -> reverse geocode to pincode is a future enhancement;
@@ -44,12 +53,13 @@ export function LocationModal() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-brand-900/40 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-brand-900/40 p-0 backdrop-blur-sm sm:items-center sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="location-title"
+      onClick={onClose ? (e) => e.target === e.currentTarget && onClose() : undefined}
     >
-      <div className="card w-full max-w-md rounded-b-none rounded-t-2xl p-6 sm:rounded-2xl">
+      <div className="card my-auto max-h-full w-full max-w-md overflow-y-auto rounded-b-none rounded-t-2xl p-6 sm:rounded-2xl">
         <div className="mb-4 flex items-center gap-2 text-brand-600">
           <MapPin className="h-5 w-5" />
           <h2 id="location-title" className="font-display text-lg font-semibold text-brand-800">
