@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { MapPin, Loader2, CheckCircle2, XCircle, Navigation } from "lucide-react";
 import { useI18n } from "@/i18n/useI18n";
 import { api } from "@/lib/api/endpoints";
@@ -45,13 +46,18 @@ export function LocationModal({ onClose }: { onClose?: () => void } = {}) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  // Ancestors using backdrop-filter (the sticky header) become the containing
+  // block for `position: fixed`, so the dialog must render into <body>.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const useGps = () => {
     // Geolocation -> reverse geocode to pincode is a future enhancement;
     // for the MVP we prompt the user to enter a PIN code.
     setError("GPS detection is coming soon. Please enter your PIN code.");
   };
 
-  return (
+  const dialog = (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-brand-900/40 p-0 backdrop-blur-sm sm:items-center sm:p-4"
       role="dialog"
@@ -129,4 +135,7 @@ export function LocationModal({ onClose }: { onClose?: () => void } = {}) {
       </div>
     </div>
   );
+
+  if (!mounted) return null;
+  return createPortal(dialog, document.body);
 }
